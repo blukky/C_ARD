@@ -2,6 +2,26 @@
 #define _GYROLIB_H_
 
 
+
+#define MPU6050_ADDR 0x68
+#define MPU6050_PWR_MGMT_1 0x6b
+#define MPU6050_SMPLRT_DIV 0x19
+#define CONFIG 0x1a
+#define GYRO_CONFIG 0x1b
+#define ACCEL_CONFIG 0x1c
+#define INT_ENABLE 0x38
+#define COMPLEMENTARY_FILTER 0.98
+#define ACCEL_XOUT_H 0x3b
+#define ACCEL_YOUT_H 0x3d
+#define ACCEL_ZOUT_H 0x3f
+#define GYRO_XOUT_H 0x43
+#define GYRO_YOUT_H 0x45
+#define GYRO_ZOUT_H 0x47
+#define GRAVITY_ACCEL 9.81
+
+#define RAD_TO_DEG 180.0 / 3.14159265358979323846
+
+
 int configMPU6050(void); // Init and config MPU6050
 
 short read_raw_data(int fd, int addr); // read raw data from sensor
