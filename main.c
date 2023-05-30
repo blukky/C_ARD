@@ -1,5 +1,10 @@
 #include <gyro.h>
-
+#include <stdio.h>
+#include <wiringPi.h>
+#include <wiringPiI2C.h>
+#include <math.h>
+#include <time.h>
+#include <unistd.h>
 
 
 int main (){
