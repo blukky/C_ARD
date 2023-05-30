@@ -79,6 +79,7 @@ void calibrateGyro(int fd, int iter, float *x_error, float *y_error, float *z_er
       *x_error = *x_error + GyroX / 65.5;
       *y_error = *y_error + GyroY / 65.5;
       *z_error = *z_error + GyroZ / 65.5;
+      delay(1);
    }
 
    *x_error = *x_error /  iter;
