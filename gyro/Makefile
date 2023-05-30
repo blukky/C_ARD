@@ -1,5 +1,5 @@
-CFLAGS=-c -Wall -O2
-
+CFLAGS=-c -Wall -O2 -lwiringPy -lm
+CC = gcc
 all: gyro.a
 
 gyro.a: gyro.o
