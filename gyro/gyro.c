@@ -87,6 +87,23 @@ void calibrateGyro(int fd, int iter, float *x_error, float *y_error, float *z_er
    *z_error = *z_error /  iter;
 }
 
+void initGyro(int fd, float *kalmanPitch, float *kalmanRoll, float AccelPitchError, float AccelRollError)
+{
+    float AccX, AccY, AccZ;
+    get_accel_data(fd, &AccX, &AccY, &AccZ);
+    float v = dist(AccX, AccY, AccZ);
+    if (v == 0)
+    {
+        *kalmanPitch = 0;
+        *kalmanRoll = 0;
+    }
+    else
+    {
+        *kalmanPitch = asin(AccY / v) * RAD_TO_DEG - AccelPitchError;
+        *kalmanRoll = asin(-AccX / v) * RAD_TO_DEG - AccelRollError;
+    }
+}
+
 
 float calcKalmanAngle(float acc, float gyro, float dt, float *uncertanty,  float *kalman_gain, float angle){
    angle = angle + gyro * dt;
@@ -96,6 +113,34 @@ float calcKalmanAngle(float acc, float gyro, float dt, float *uncertanty,  float
    *uncertanty = *uncertanty * (1 - *kalman_gain);
    return angle;
    }
+
+void get_angle(int fd, float *Gx, float *Gy, float *Gz, float *yaw, float *kalmanPitch, float *kalmanRoll,
+               float AccelPitchError, float AccelRollError, float GyroPitchError, float GyroRollError, float GyroYawError,
+               float *uncertantyPitch, float *uncertantyRoll, float *kalmanGainPitch, float *kalmanGainRoll)
+{
+    float Apitch, Aroll;
+    float AccX, AccY, AccZ, GyroX, GyroY, GyroZ;
+    get_accel_data(fd, &AccX, &AccY, &AccZ);
+    get_gyro_data(fd, &GyroX, &GyroY, &GyroZ);
+    float v = dist(AccX, AccY, AccZ);
+    if (v == 0)
+    {
+        Apitch = 0;
+        Aroll = 0;
+    }
+    else
+    {
+        Apitch = asin(AccY / v) * RAD_TO_DEG - AccelPitchError;
+        Aroll = asin(-AccX / v) * RAD_TO_DEG - AccelRollError;
+    }
+    *Gx = GyroX / 65.5 - GyroPitchError;
+    *Gy = GyroY / 65.5 - GyroRollError;
+    *Gz = GyroZ / 65.5 - GyroYawError;
+    *yaw = 0.9 * *yaw + 0.1 * (*yaw + *Gz * 0.004);
+    *kalmanPitch = calcKalmanAngle(Apitch, *Gx, 0.004, uncertantyPitch, kalmanGainPitch, *kalmanPitch);
+    *kalmanRoll = calcKalmanAngle(Aroll, *Gy, 0.004, uncertantyRoll, kalmanGainRoll, *kalmanRoll);
+    // printf("pitch=%.2f roll=%.2f yaw=%.2f\n", *kalmanPitch, *kalmanRoll, *yaw);
+}
 
 // int main (){
    

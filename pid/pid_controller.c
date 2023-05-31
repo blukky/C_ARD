@@ -1,12 +1,5 @@
 
 
-
-
-
-
-
-
-
 int limited(int a, float min, float max){
     if (a >= max){
         return max;
@@ -16,14 +9,14 @@ int limited(int a, float min, float max){
     return a;
 }
 
-float *pid_function(float k_p, float k_i, float k_d, float dt, float integral, float error, float last_error, float min, float max) {
-    float out[3];
-    integral = integral + error * dt;
-    integral = limited(integral, min, max);
-    float output = k_p * error + integral * k_i + k_d * ((error - last_error) / dt);
-    output = limited(output, min, max);
-    out[0] = output;
-    out[1] = error;
-    out[2] = integral;
-    return out;
+void pid_function(float Error, float P , float I, float D, float PrevError, float PrevIterm, float min, float max, float PIDReturn[]) {
+  float Pterm=P*Error;
+  float Iterm=PrevIterm+I*(Error+PrevError)*0.004/2;
+  Iterm = limited(Iterm, min, max);
+  float Dterm=D*(Error-PrevError)/0.004;
+  float PIDOutput= Pterm+Iterm+Dterm;
+  PIDOutput = limited(PIDOutput, min, max);
+  PIDReturn[0]=PIDOutput;
+  PIDReturn[1]=Error;
+  PIDReturn[2]=Iterm;
 }

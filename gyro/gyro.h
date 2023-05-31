@@ -36,4 +36,10 @@ void calibrateGyro(int fd, int iter, float *x_error, float *y_error, float *z_er
 
 float calcKalmanAngle(float acc, float gyro, float dt, float *uncertanty,  float *kalman_gain, float angle); // calculated angle drone
 
+void initGyro(int fd, float *kalmanPitch, float *kalmanRoll, float AccelPitchError, float AccelRollError); // init first value gyro
+
+void get_angle(int fd, float *Gx, float *Gy, float *Gz, float *yaw, float *kalmanPitch, float *kalmanRoll,
+               float AccelPitchError, float AccelRollError, float GyroPitchError, float GyroRollError, float GyroYawError,
+               float *uncertantyPitch, float *uncertantyRoll, float *kalmanGainPitch, float *kalmanGainRoll); // get angle from data
+
 #endif // _TOFLIB_H
